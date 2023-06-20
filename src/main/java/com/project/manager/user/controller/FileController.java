@@ -1,0 +1,54 @@
+package com.project.manager.user.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Objects;
+
+@Slf4j
+@RestController
+@RequestMapping("/api")
+public class FileController {
+    @GetMapping("/uploads/{fileName:.+}")
+    public ResponseEntity<byte[]> displayImage(@PathVariable String fileName) throws IOException {
+        String filePath = "uploads/" + fileName;
+        File file = new File(filePath);
+        byte[] imageBytes = Files.readAllBytes(file.toPath());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG); // Adjust the media type based on your image format
+        headers.setContentLength(imageBytes.length);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
+    public String uploadFile(MultipartFile file) {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        try {
+            Path filePath = Paths.get("uploads").resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            return ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/uploads/")
+                    .path(fileName)
+                    .toUriString();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return "error";
+    }
+
+
+}
