@@ -81,18 +81,4 @@ public class UserController {
         }
     }
 
-    @GetMapping("/secured/{username}")
-    @PreAuthorize("authentication.principal.username == #username || hasAuthority('ADMIN')")
-    @ResponseBody
-    public String securedEndpoint(Authentication authentication,  @PathVariable("username") String username) {
-        String authenticatedUsername = authentication.getName(); // Get the authenticated username
-
-        if (authenticatedUsername.equals(username) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
-            // Authorized user accessing the method
-            return "Access granted for user: " + authenticatedUsername;
-        } else {
-            // Unauthorized user attempting to access the method
-            return "Access denied";
-        }
-    }
 }
