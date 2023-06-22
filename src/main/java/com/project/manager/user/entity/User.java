@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.*;
 import java.util.Date;
 @Getter
 @Setter
@@ -24,8 +25,12 @@ public class User {
     private String company;
     private String jobPosition;
     private String mobile;
+    @NotBlank
     private String username;
+    @NotBlank
+    @Email(message = "Invalid email address")
     private String email;
+   // @Size(min = 6, max = 10, message = "type need to have only 10 characters")
     private String password;
     private String role;
 
