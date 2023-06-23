@@ -1,5 +1,6 @@
 package com.project.manager.user.service;
 
+import com.project.manager.user.service.impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

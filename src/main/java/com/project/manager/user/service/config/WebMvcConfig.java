@@ -1,4 +1,4 @@
-package com.project.manager.user.service;
+package com.project.manager.user.service.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

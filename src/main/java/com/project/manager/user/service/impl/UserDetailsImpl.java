@@ -1,4 +1,4 @@
-package com.project.manager.user.service;
+package com.project.manager.user.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.manager.user.entity.User;

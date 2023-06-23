@@ -2,6 +2,8 @@ package com.project.manager.user.controller;
 
 import com.project.manager.user.entity.User;
 import com.project.manager.user.repository.UserRepository;
+import com.project.manager.user.service.FileService;
+import com.project.manager.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,9 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
+    @Autowired
+    FileService fileService;
     @Autowired
     FileController fileController;
 
@@ -29,7 +33,7 @@ public class UserController {
 
     @GetMapping("/users/generate")
     public ResponseEntity<User> getUserByCount(@RequestParam("count") long count) {
-        Optional<User> userOptional = userRepository.findById(count);
+        Optional<User> userOptional = userService.findById(count);
         return userOptional.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -41,16 +45,16 @@ public class UserController {
             @RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password,
             @RequestParam("role") String role)
     {
-       if(userRepository.existsByUsername(username) ){
+       if(userService.existsByUsername(username) ){
            return new ResponseEntity<>("Ce nom d'utilisateur est deja utijise", HttpStatus.CONFLICT);
-       }if(userRepository.existsByEmail(email)){
+       }if(userService.existsByEmail(email)){
         return new ResponseEntity<>("Ce email est deja utijise", HttpStatus.CONFLICT);
       }
-        String avatar = fileController.uploadFile(file);
+        String avatar = fileService.uploadFile(file);
         try {
-            User saveUser = userRepository
-                    .save(new User(count, firstName, lastName, null, city, avatar, company, jobPosition, mobile,
-                            username, email, encoder.encode(password), role));
+            User user = new User(count, firstName, lastName, null, city, avatar, company, jobPosition, mobile,
+                            username, email, encoder.encode(password), role);
+            User saveUser = userService.save(user);
             return new ResponseEntity<>(saveUser, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,7 +66,7 @@ public class UserController {
     public  ResponseEntity<?>userProfile(Authentication authentication) {
         try {
             String authenticatedUsername = authentication.getName();
-            Optional<User> userOptional = userRepository.findByUsername(authenticatedUsername);
+            Optional<User> userOptional = userService.findByUsername(authenticatedUsername);
             return userOptional.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,7 +78,7 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(Authentication authentication, @PathVariable("username") String username) {
         String authenticatedUsername = authentication.getName();
         if (authenticatedUsername.equals(username) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
-            Optional<User> userOptional = userRepository.findByUsername(username);
+            Optional<User> userOptional = userService.findByUsername(username);
             return userOptional.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
