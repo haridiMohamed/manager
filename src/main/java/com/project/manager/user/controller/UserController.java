@@ -6,6 +6,7 @@ import com.project.manager.user.service.FileService;
 import com.project.manager.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -40,10 +43,10 @@ public class UserController {
     @PostMapping(value = "/users/batch", consumes = {"multipart/form-data"})
     public ResponseEntity<?> saveUser(@Valid
             @RequestParam("file") MultipartFile file, @RequestParam("count") Integer count, @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName, @RequestParam("city") String city,
-            @RequestParam("company") String company, @RequestParam("jobPosition") String jobPosition, @RequestParam("mobile") String mobile,
-            @RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password,
-            @RequestParam("role") String role)
+                                      @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("birthDate") @DateTimeFormat(pattern = "yyyy/MM/dd") Date birthDate,
+                                      @RequestParam("company") String company, @RequestParam("jobPosition") String jobPosition, @RequestParam("mobile") String mobile,
+                                      @RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password,
+                                      @RequestParam("role") String role)
     {
        if(userService.existsByUsername(username) ){
            return new ResponseEntity<>("Ce nom d'utilisateur est deja utijise", HttpStatus.CONFLICT);
@@ -52,7 +55,7 @@ public class UserController {
       }
         String avatar = fileService.uploadFile(file);
         try {
-            User user = new User(count, firstName, lastName, null, city, avatar, company, jobPosition, mobile,
+            User user = new User(count, firstName, lastName, birthDate, city, avatar, company, jobPosition, mobile,
                             username, email, encoder.encode(password), role);
             User saveUser = userService.save(user);
             return new ResponseEntity<>(saveUser, HttpStatus.CREATED);
