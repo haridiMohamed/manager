@@ -1,6 +1,6 @@
 package com.project.manager.user.service;
 
-import lombok.Setter;
+import com.project.manager.user.service.interfaces.IFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,9 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class FileService {
+public class FileService implements IFileService {
 
+    @Override
     public String uploadFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
@@ -37,11 +38,12 @@ public class FileService {
         }
         return "error";
     }
+    @Override
     public ResponseEntity<byte[]> displayFile(String filePath) throws IOException {
         File file = new File(filePath);
         byte[] imageBytes = Files.readAllBytes(file.toPath());
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG); // Adjust the media type based on your image format
+        headers.setContentType(MediaType.IMAGE_JPEG);
         headers.setContentLength(imageBytes.length);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }

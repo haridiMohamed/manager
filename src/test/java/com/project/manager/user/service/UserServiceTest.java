@@ -9,10 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -24,8 +28,11 @@ class UserServiceTest {
     @Autowired
     PasswordEncoder encoder;
     @Test
-    void save() {
-        User user = new User(10, "firstName", "lastName", null, "city", "avatar", "company", "jobPosition", "mobile",
+    void save() throws ParseException {
+        String dateInString = "27/07/2021";
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        Date birthDate = format.parse(dateInString);
+        User user = new User(10, "firstName", "lastName", birthDate, "city", "avatar", "company", "jobPosition", "mobile",
                 "username", "email@gmail.com", encoder.encode("password"), "role");
         User userTest = userService.save(user);
         assertNotNull(userTest);
@@ -40,13 +47,19 @@ class UserServiceTest {
 
     @Test
     void existsByUsername() {
+        Boolean checkUser = userService.existsByUsername("simoniS");
+        assertEquals(false,checkUser);
     }
 
     @Test
     void existsByEmail() {
+        Boolean checkUser = userService.existsByEmail("simoni@gmail.com");
+        assertEquals(false,checkUser);
     }
 
     @Test
     void findByUsername() {
+        Optional<User> checkUser = userService.findByUsername("simoni");
+        assertNotNull(checkUser);
     }
 }

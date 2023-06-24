@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping(value = "/users/batch", consumes = {"multipart/form-data"})
     public ResponseEntity<?> saveUser(@Valid
             @RequestParam("file") MultipartFile file, @RequestParam("count") Integer count, @RequestParam("firstName") String firstName,
-                                      @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("birthDate") @DateTimeFormat(pattern = "yyyy/MM/dd") Date birthDate,
+                                      @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("birthDate") @DateTimeFormat(pattern = "dd/MMM/yyyy") Date birthDate,
                                       @RequestParam("company") String company, @RequestParam("jobPosition") String jobPosition, @RequestParam("mobile") String mobile,
                                       @RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password,
                                       @RequestParam("role") String role)
