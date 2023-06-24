@@ -24,7 +24,7 @@ import java.util.Objects;
 public class FileService implements IFileService {
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(Long count ,MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             Path filePath = Paths.get("uploads").resolve(fileName);

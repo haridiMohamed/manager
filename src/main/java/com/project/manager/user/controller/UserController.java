@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
+import static com.project.manager.user.service.UserService.generateRandomPassword;
+
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -42,10 +44,10 @@ public class UserController {
 
     @PostMapping(value = "/users/batch", consumes = {"multipart/form-data"})
     public ResponseEntity<?> saveUser(@Valid
-            @RequestParam("file") MultipartFile file, @RequestParam("count") Integer count, @RequestParam("firstName") String firstName,
-                                      @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("birthDate") @DateTimeFormat(pattern = "dd/MMM/yyyy") Date birthDate,
+            @RequestParam("file") MultipartFile file, @RequestParam("count") Long count, @RequestParam("firstName") String firstName,
+                                      @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("birthDate") @DateTimeFormat(pattern = "dd/MM/yyyy") Date birthDate,
                                       @RequestParam("company") String company, @RequestParam("jobPosition") String jobPosition, @RequestParam("mobile") String mobile,
-                                      @RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password,
+                                      @RequestParam("username") String username, @RequestParam("email") String email,
                                       @RequestParam("role") String role)
     {
        if(userService.existsByUsername(username) ){
@@ -53,10 +55,11 @@ public class UserController {
        }if(userService.existsByEmail(email)){
         return new ResponseEntity<>("Ce email est deja utijise", HttpStatus.CONFLICT);
       }
-        String avatar = fileService.uploadFile(file);
+        String avatar = fileService.uploadFile(count,file);
         try {
+
             User user = new User(count, firstName, lastName, birthDate, city, avatar, company, jobPosition, mobile,
-                            username, email, encoder.encode(password), role);
+                            username, email, encoder.encode(generateRandomPassword()), role);
             User saveUser = userService.save(user);
             return new ResponseEntity<>(saveUser, HttpStatus.CREATED);
         } catch (Exception e) {

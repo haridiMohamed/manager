@@ -32,8 +32,8 @@ class UserServiceTest {
         String dateInString = "27/07/2021";
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         Date birthDate = format.parse(dateInString);
-        User user = new User(10, "firstName", "lastName", birthDate, "city", "avatar", "company", "jobPosition", "mobile",
-                "username", "email@gmail.com", encoder.encode("password"), "role");
+        User user = new User(10L, "firstName", "lastName", birthDate, "city", "avatar", "company", "jobPosition", "mobile",
+                "username", "email@gmail.com", encoder.encode("1234567890"), "role");
         User userTest = userService.save(user);
         assertNotNull(userTest);
     }

@@ -16,7 +16,7 @@ import java.util.Date;
 public class User {
 
     @Id
-    private long count;
+    private Long count;
     private String firstName;
     private String lastName;
     private Date birthDate;
@@ -30,11 +30,10 @@ public class User {
     @NotBlank
     @Email(message = "Invalid email address")
     private String email;
-   // @Size(min = 6, max = 10, message = "type need to have only 10 characters")
     private String password;
     private String role;
 
-    public User(Integer count, String firstName, String lastName, Date birthDate, String city, String avatar, String company, String jobPosition, String mobile, String username, String email, String password, String role) {
+    public User(Long count, String firstName, String lastName, Date birthDate, String city, String avatar, String company, String jobPosition, String mobile, String username, String email, String password, String role) {
         this.count = count;
         this.firstName = firstName;
         this.lastName = lastName;
