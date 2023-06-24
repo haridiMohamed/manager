@@ -1,4 +1,4 @@
-package com.project.manager.user.service;
+package com.project.manager.user.service.impl;
 
 import com.project.manager.user.entity.User;
 import com.project.manager.user.repository.UserRepository;
