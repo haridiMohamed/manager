@@ -57,9 +57,9 @@ public class UserController {
       }
         String avatar = fileService.uploadFile(count,file);
         try {
-
+            String password = generateRandomPassword();
             User user = new User(count, firstName, lastName, birthDate, city, avatar, company, jobPosition, mobile,
-                            username, email, encoder.encode(generateRandomPassword()), role);
+                            username, email, encoder.encode(password), role);
             User saveUser = userService.save(user);
             return new ResponseEntity<>(saveUser, HttpStatus.CREATED);
         } catch (Exception e) {

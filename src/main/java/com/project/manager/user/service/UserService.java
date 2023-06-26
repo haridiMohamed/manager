@@ -38,15 +38,15 @@ public class UserService implements IUserService {
     public static String generateRandomPassword() {
         int minLength = 6;
         int maxLength = 10;
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]};:'\",<.>/?";
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();
-        int length = (int) (Math.random() * (maxLength - 6 + 1) + minLength);
+        int length = (int) (Math.random() * (maxLength - minLength + 1) + minLength);
 
         for (int i = 0; i < length; i++) {
             int randomIndex = (int) (Math.random() * characters.length());
             password.append(characters.charAt(randomIndex));
         }
-         log.debug("Generate password = "+ password);
+        System.out.println("Generate password = "+ password);
         return password.toString();
     }
 }
